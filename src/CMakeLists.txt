@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.28)
+
+# project name: testgenerator
+# project type: C++ executable
+# project version: 0.1
+project(testgenerator VERSION 0.1 LANGUAGES CXX)
+
+# source files: testgenerator.cpp
+set(SOURCES testgenerator.cpp)
+
+# set the C++ standard to C++17
+set(CMAKE_CXX_STANDARD 17)
+
+#include dependencies: yaml-cpp
+find_package(yaml-cpp REQUIRED)
+
+# add the executable
+add_executable(testgenerator ${SOURCES})
+target_link_libraries(testgenerator yaml-cpp)
