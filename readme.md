@@ -51,25 +51,15 @@ from: 1
 to: 10
 description: "Test description"
 lines:
-  - line: # line definition
-  - line: # line definition
-  - line: # line definition
+  - # line definition
+  - # line definition
+  - # line definition
   # other lines
 ```
 
 ### Structure of the test
 
-Structure of the test defines format of each line. Line can contain one or more elements.
-
-Line definition is a YAML object with the following fields:
-
-```yaml
-line:
-  - element: # element definition
-  - element: # element definition
-  - element: # element definition
-  # other elements
-```
+Structure of the test defines format of each line. Line can contain one element.
 
 Each element can be of the following types:
 
