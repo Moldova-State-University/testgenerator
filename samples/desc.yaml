@@ -1,6 +1,7 @@
 # example of test specification
-filename: "test%.txt"
-nr_tests: 10
+filename: "input%.txt"
+from: 1
+to: 10
 description: "Test description"
 lines:
   - type: integer

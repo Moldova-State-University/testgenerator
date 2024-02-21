@@ -1,6 +1,6 @@
 /**
  * @file testgenerator.cpp
- * @author Mihail Croitor (you@domain.com)
+ * @author Mihail Croitor (mcroitor@gmail.com)
  * @brief This is a simple test data generator that reads a configuration file and
  * generates random test data
  * @version 0.1
@@ -32,218 +32,15 @@
 
 #include <iostream>
 #include <fstream>
-#include <cmath>
-#include <random>
 #include <string>
 #include <vector>
 #include <map>
 #include <filesystem>
-#include <yaml-cpp/yaml.h>
 
-// Random number generator
-std::mt19937 rng(std::random_device{}());
+#include "generators.hpp"
+#include "formatparser.hpp"
 
-const std::string numbers = "0123456789";
-const std::string lowercase = "abcdefghijklmnopqrstuvwxyz";
-const std::string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const std::string characters = numbers + lowercase + uppercase;
-
-// used for storing variable names and their values
-std::map<std::string, int> variables;
-
-/**
- * @brief Generate a random integer between min and max (inclusive)
- *
- * @param min
- * @param max
- * @return int
- */
-int generate_integer(int min, int max)
-{
-  return std::uniform_int_distribution<int>(min, max)(rng);
-}
-
-/**
- * @brief Generate a random real number between min and max (inclusive) with a given precision
- *
- * @param min
- * @param max
- * @param precision default is 2
- * @return double
- */
-double generate_real(double min, double max, int precision = 2)
-{
-  return std::round(
-             std::uniform_real_distribution<double>(min, max)(rng) * std::pow(10, precision)) /
-         std::pow(10,
-                  precision);
-}
-
-/**
- * @brief Generate a random string of length between min_length and max_length (inclusive)
- * using the given characters
- *
- * @param min_length
- * @param max_length
- * @param characters
- * @return std::string
- */
-std::string generate_string(int min_length, int max_length, std::string characters = characters)
-{
-  std::string result;
-  int length = generate_integer(min_length, max_length);
-  for (int i = 0; i < length; i++)
-  {
-    result += characters[generate_integer(0, characters.size() - 1)];
-  }
-  return result;
-}
-
-/**
- * @brief Generate a random integer vector of size between min and max (inclusive)
- *
- * @param size
- * @param min
- * @param max
- * @return std::vector<int>
- */
-std::vector<int> generate_integer_vector(int size, int min, int max)
-{
-  std::vector<int> result;
-  for (int i = 0; i < size; i++)
-  {
-    result.push_back(generate_integer(min, max));
-  }
-  return result;
-}
-
-/**
- * @brief Generate a random real number vector of size between min and max (inclusive)
- * with a given precision
- *
- * @param size
- * @param min
- * @param max
- * @param precision
- * @return std::vector<double>
- */
-std::vector<double> generate_real_vector(int size, double min, double max, int precision = 2)
-{
-  std::vector<double> result;
-  for (int i = 0; i < size; i++)
-  {
-    result.push_back(generate_real(min, max, precision));
-  }
-  return result;
-}
-
-/**
- * @brief Generate a random string vector of size between min and max (inclusive)
- * of length between min_length and max_length (inclusive) using the given characters
- *
- * @param size
- * @param min_length
- * @param max_length
- * @param characters
- * @return std::vector<std::string>
- */
-std::vector<std::string> generate_string_vector(int size, int min_length, int max_length, std::string characters = characters)
-{
-  std::vector<std::string> result;
-  for (int i = 0; i < size; i++)
-  {
-    result.push_back(generate_string(min_length, max_length, characters));
-  }
-  return result;
-}
-
-std::string node_to_integer(const YAML::Node &node)
-{
-  int min = node["min"].as<int>();
-  int max = node["max"].as<int>();
-  int number = generate_integer(min, max);
-
-  // if node has name field, store this value in the variables map
-  if (node["name"])
-  {
-    std::string name = node["name"].as<std::string>();
-    variables[name] = number;
-  }
-  return std::to_string(number);
-}
-
-std::string node_to_real(const YAML::Node &node)
-{
-  double min = node["min"].as<double>();
-  double max = node["max"].as<double>();
-  int precision = node["precision"].as<int>();
-  double number = generate_real(min, max, precision);
-  return std::to_string(number);
-}
-
-std::string node_to_string(const YAML::Node &node)
-{
-  int min_length = node["min_length"].as<int>();
-  int max_length = node["max_length"].as<int>();
-  std::string characters = node["characters"].as<std::string>();
-  std::string string = generate_string(min_length, max_length, characters);
-  return string;
-}
-
-typedef std::string (*node_to_type)(const YAML::Node &node);
-
-/**
- * @brief map of named YAML convertors
- *
- */
-std::map<std::string, node_to_type> convertor = {
-    {"integer", node_to_integer},
-    {"real", node_to_real},
-    {"string", node_to_string},
-};
-
-std::string node_to_vector(const YAML::Node &node)
-{
-  std::string result{""};
-
-  auto sizeStr = node["size"].as<std::string>();
-  int size = 0;
-  // if sizeStr is integer then use it as size
-  if (sizeStr.find_first_not_of("0123456789") == std::string::npos)
-  {
-    size = std::stoi(sizeStr);
-  }
-  else
-  {
-    // if sizeStr is a variable name then use it as size
-    if (variables.find(sizeStr) != variables.end())
-    {
-      size = variables[sizeStr];
-    }
-    else
-    {
-      std::cerr << "Unknown array size: " << sizeStr << std::endl;
-      return result;
-    }
-  }
-
-  const auto &element = node["element"];
-
-  auto element_type = element["type"].as<std::string>();
-  if (convertor.at(element_type))
-  {
-    for (int i = 0; i < size; i++)
-    {
-      result += convertor.at(element_type)(element) + " ";
-    }
-  }
-  else
-  {
-    std::cerr << "Unknown type: " << element_type << std::endl;
-  }
-
-  return result;
-}
+extern std::map<std::string, node_to_type> convertor;
 
 /**
  * @brief Generate a test based on the given structure
@@ -293,9 +90,10 @@ void sample_test_description_generator()
   config["filename"] = "input%.txt";
   config["from"] = 1;
   config["to"] = 10;
-  config["lines"].push_back(YAML::Load("line:\n  type: integer\n  min: 1\n  max: 100\n  name: N"));
-  config["lines"].push_back(YAML::Load("line:\n  type: real\n  min: 0.\n  max: 1.\n precision: 2"));
-  config["lines"].push_back(YAML::Load("line:\n  type: array\n  size: N\n  element:\n    type: integer\n    min: -100\n    max: 100"));
+  config["description"] = "Sample test description";
+  config["lines"].push_back(YAML::Load("type: integer\nmin: 1\nmax: 100\nname: N"));
+  config["lines"].push_back(YAML::Load("type: float\nmin: 0\nmax: 1"));
+  config["lines"].push_back(YAML::Load("type: array\nsize: N\nelement:\n  type: integer\n  min: -100\n  max: 100"));
 
   file << config;
   file.close();
@@ -329,7 +127,7 @@ int main(int argc, char *argv[])
   int to = config_node["to"].as<int>();
   const auto &lines = config_node["lines"];
 
-  std::cout << "Generating " << (to - from) << " tests." << std::endl;
+  std::cout << "Generating " << (to - from + 1) << " tests." << std::endl;
 
   for (int i = from; i <= to; ++i)
   {

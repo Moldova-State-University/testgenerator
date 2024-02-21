@@ -4,6 +4,12 @@
 
 This is a test generator for Programming Contest tasks. Application reads a test description and generate a set of tests (text files) that satisfy the description.
 
+## Requirements
+
+- CMake 3.28 or later
+- C++17 compiler
+- yaml-cpp library
+
 ## Build
 
 Download the source code and build the application using the following commands:
@@ -21,23 +27,51 @@ make
 ./testgenerator <test_description_file>
 ```
 
+You can generate a sample of the test description file using the following command:
+
+```bash
+./testgenerator --sample
+```
+
 ## Test description file
 
 Test description file is a YAML file that contains the following fields:
 
-- filename: pattern for test files
-- nr_tests: number of tests to generate
-- description: description of the test
-- structure: structure of the test
+- `filename`: pattern for test files, the percent (`%`) sign is replaced with the test number
+- `from`: start number of tests to generate
+- `to`: end number of tests to generate
+- `description`: description of the test (?) - not used
+- `lines`: lines of the test
+
+Example:
+
+```yaml
+filename: "input%.txt"
+from: 1
+to: 10
+description: "Test description"
+lines:
+  - line: # line definition
+  - line: # line definition
+  - line: # line definition
+  # other lines
+```
 
 ### Structure of the test
 
-Structure of the test defines
+Structure of the test defines format of each line. Line can contain one or more elements.
 
-- number of lines in the test file
-- format of each line
+Line definition is a YAML object with the following fields:
 
-Line can contain:
+```yaml
+line:
+  - element: # element definition
+  - element: # element definition
+  - element: # element definition
+  # other elements
+```
+
+Each element can be of the following types:
 
 - integer
 - float
@@ -123,20 +157,28 @@ element:
 This example defines 10 tests. Test contains 2 lines. First line contains one integer `N` value in the range from 1 to 100. Second line contains `N` integer values in the range from -100 to 100.
 
 ```yaml
-filename: "test%02d.txt"
-nr_tests: 10
+filename: "input%.txt"
+from: 1
+to: 10
 description: "Test description"
 lines:
-  - line:
+  - type: integer
+    min: 1
+    max: 100
+    name: N
+  - type: float
+    min: 0
+    max: 1
+  - type: array
+    size: 100
+    element:
       type: integer
-      min: 1
+      min: -100
       max: 100
-      name: N
-  - line:
-      type: array
-      size: N
-      element:
-        type: integer
-        min: -100
-        max: 100
 ```
+
+## Plans for the future
+
+- define more than one element in the line
+- define more than one test definition in the file
+- define lines generator
