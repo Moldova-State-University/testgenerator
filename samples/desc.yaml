@@ -4,13 +4,20 @@ from: 1
 to: 10
 description: "Test description"
 lines:
-  - type: integer
-    min: 1
-    max: 100
-    name: N
-  - type: array
-    size: 100
-    element:
-      type: integer
-      min: -100
+  - - type: integer
+      min: 1
       max: 100
+      name: M
+    - type: integer
+      min: 1
+      max: 100
+      name: N
+  - - type: integer
+      min: 1
+      max: M  
+  - - type: array
+      size: N
+      element:
+        type: integer
+        min: -100
+        max: 100

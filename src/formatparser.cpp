@@ -15,10 +15,32 @@ std::map<std::string, node_to_type> convertor = {
     {"string", node_to_string},
 };
 
+int get_parametrized_value(const std::string &value)
+{
+  int size = 0;
+  if (value.find_first_not_of("-0123456789") == std::string::npos)
+  {
+    size = std::stoi(value);
+  }
+  else
+  {
+    // if sizeStr is a variable name then use it as size
+    if (variables.find(value) != variables.end())
+    {
+      size = variables[value];
+    }
+    else
+    {
+      std::cerr << "Unknown value: " << value << std::endl;
+    }
+  }
+  return size;
+}
+
 std::string node_to_integer(const YAML::Node &node)
 {
-  int min = node["min"].as<int>();
-  int max = node["max"].as<int>();
+  int min = get_parametrized_value(node["min"].as<std::string>());
+  int max = get_parametrized_value(node["max"].as<std::string>());
   int number = generate_integer(min, max);
 
   // if node has name field, store this value in the variables map
@@ -41,8 +63,8 @@ std::string node_to_float(const YAML::Node &node)
 
 std::string node_to_string(const YAML::Node &node)
 {
-  int min_length = node["min_length"].as<int>();
-  int max_length = node["max_length"].as<int>();
+  int min_length = get_parametrized_value(node["min_length"].as<std::string>());
+  int max_length = get_parametrized_value(node["max_length"].as<std::string>());
   std::string chars = (node["characters"]) ? node["characters"].as<std::string>() : characters;
   std::string string = generate_string(min_length, max_length, chars);
   return string;
@@ -53,26 +75,7 @@ std::string node_to_vector(const YAML::Node &node)
 {
   std::string result{""};
 
-  auto sizeStr = node["size"].as<std::string>();
-  int size = 0;
-  // if sizeStr is integer then use it as size
-  if (sizeStr.find_first_not_of("0123456789") == std::string::npos)
-  {
-    size = std::stoi(sizeStr);
-  }
-  else
-  {
-    // if sizeStr is a variable name then use it as size
-    if (variables.find(sizeStr) != variables.end())
-    {
-      size = variables[sizeStr];
-    }
-    else
-    {
-      std::cerr << "Unknown array size: " << sizeStr << std::endl;
-      return result;
-    }
-  }
+  int size = get_parametrized_value(node["size"].as<std::string>());
 
   const auto &element = node["element"];
 

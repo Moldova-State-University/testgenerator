@@ -18,7 +18,7 @@ double generate_float(double min, double max, int precision)
                   precision);
 }
 
-std::string generate_string(int min_length, int max_length, std::string characters)
+std::string generate_string(int min_length, int max_length, std::string chars)
 {
   std::string result;
   int length = generate_integer(min_length, max_length);
@@ -50,7 +50,7 @@ std::vector<double> generate_float_vector(int size, double min, double max, int 
 }
 
 
-std::vector<std::string> generate_string_vector(int size, int min_length, int max_length, std::string characters)
+std::vector<std::string> generate_string_vector(int size, int min_length, int max_length, std::string chars)
 {
   std::vector<std::string> result;
   for (int i = 0; i < size; i++)

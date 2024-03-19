@@ -59,7 +59,7 @@ lines:
 
 ### Structure of the test
 
-Structure of the test defines format of each line. Line can contain one element.
+Structure of the test defines format of each line. Line can contain one or more elements.
 
 Each element can be of the following types:
 
@@ -152,23 +152,27 @@ from: 1
 to: 10
 description: "Test description"
 lines:
-  - type: integer
-    min: 1
-    max: 100
-    name: N
-  - type: float
-    min: 0
-    max: 1
-  - type: array
-    size: 100
-    element:
-      type: integer
-      min: -100
+  - - type: integer
+      min: 1
       max: 100
+      name: M
+    - type: integer
+      min: 1
+      max: 100
+      name: N
+  - - type: integer
+      min: 1
+      max: M
+  - - type: array
+      size: N
+      element:
+        type: integer
+        min: -100
+        max: 100
 ```
 
 ## Plans for the future
 
-- define more than one element in the line
-- define more than one test definition in the file
-- define lines generator
+- [ ] define more than one element in the line
+- [ ] define more than one test definition in the file
+- [ ] define lines generator

@@ -16,18 +16,16 @@
  * nr_tests: 10
  * description: "Test description"
  * lines:
- *   - line:
+ *   - type: integer
+ *     min: 1
+ *     max: 100
+ *     name: N
+ *   - type: array
+ *     size: N
+ *     element:
  *       type: integer
- *       min: 1
+ *       min: -100
  *       max: 100
- *       name: N
- *   - line:
- *       type: array
- *       size: N
- *       element:
- *         type: integer
- *         min: -100
- *         max: 100
  */
 
 #include <iostream>
@@ -51,23 +49,26 @@ extern std::map<std::string, node_to_type> convertor;
 std::string generate_test(const YAML::Node &lines)
 {
   std::string result;
-  // std::map<std::string, int> variables;
-  for (const auto &node : lines)
+  for (const auto &line : lines)
   {
-    auto type = node["type"].as<std::string>();
+    for (const auto &node : line)
+    {
+      auto type = node["type"].as<std::string>();
 
-    if (convertor.find(type) != convertor.end())
-    {
-      result += convertor.at(type)(node) + "\n";
+      if (convertor.find(type) != convertor.end())
+      {
+        result += convertor.at(type)(node) + " ";
+      }
+      else if (type == "array")
+      {
+        result += node_to_vector(node) + " ";
+      }
+      else
+      {
+        std::cerr << "Unknown type: " << type << std::endl;
+      }
     }
-    else if (type == "array")
-    {
-      result += node_to_vector(node) + "\n";
-    }
-    else
-    {
-      std::cerr << "Unknown type: " << type << std::endl;
-    }
+    result += "\n";
   }
   return result;
 }
@@ -91,9 +92,9 @@ void sample_test_description_generator()
   config["from"] = 1;
   config["to"] = 10;
   config["description"] = "Sample test description";
-  config["lines"].push_back(YAML::Load("type: integer\nmin: 1\nmax: 100\nname: N"));
-  config["lines"].push_back(YAML::Load("type: float\nmin: 0\nmax: 1"));
-  config["lines"].push_back(YAML::Load("type: array\nsize: N\nelement:\n  type: integer\n  min: -100\n  max: 100"));
+  config["lines"].push_back(YAML::Load("- type: integer\n  min: 1\n  max: 100\n  name: N"));
+  config["lines"].push_back(YAML::Load("- type: float\n  min: 0\n  max: 1"));
+  config["lines"].push_back(YAML::Load("- type: array\n  size: N\n  element:\n    type: integer\n    min: -100\n    max: 100"));
 
   file << config;
   file.close();

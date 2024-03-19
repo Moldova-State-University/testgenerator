@@ -37,7 +37,7 @@ double generate_float(double min, double max, int precision = 2);
  * @param characters
  * @return std::string
  */
-std::string generate_string(int min_length, int max_length, std::string characters = characters);
+std::string generate_string(int min_length, int max_length, std::string chars = characters);
 
 /**
  * @brief Generate a random integer vector of size between min and max (inclusive)
@@ -71,6 +71,6 @@ std::vector<double> generate_float_vector(int size, double min, double max, int 
  * @param characters
  * @return std::vector<std::string>
  */
-std::vector<std::string> generate_string_vector(int size, int min_length, int max_length, std::string characters = characters);
+std::vector<std::string> generate_string_vector(int size, int min_length, int max_length, std::string chars = characters);
 
 #endif // GENERATORS_HPP
