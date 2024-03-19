@@ -24,7 +24,7 @@ std::string generate_string(int min_length, int max_length, std::string chars)
   int length = generate_integer(min_length, max_length);
   for (int i = 0; i < length; i++)
   {
-    result += characters[generate_integer(0, characters.size() - 1)];
+    result += chars[generate_integer(0, chars.size() - 1)];
   }
   return result;
 }
@@ -55,7 +55,7 @@ std::vector<std::string> generate_string_vector(int size, int min_length, int ma
   std::vector<std::string> result;
   for (int i = 0; i < size; i++)
   {
-    result.push_back(generate_string(min_length, max_length, characters));
+    result.push_back(generate_string(min_length, max_length, chars));
   }
   return result;
 }
