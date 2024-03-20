@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#define YAML_CPP_STATIC_DEFINE
 #include <yaml-cpp/yaml.h>
 
 std::string node_to_integer(const YAML::Node &node);
