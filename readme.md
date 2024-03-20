@@ -173,6 +173,6 @@ lines:
 
 ## Plans for the future
 
-- [ ] define more than one element in the line
+- [X] define more than one element in the line
 - [ ] define more than one test definition in the file
 - [ ] define lines generator

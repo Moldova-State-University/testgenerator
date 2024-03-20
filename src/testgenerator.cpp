@@ -16,16 +16,16 @@
  * nr_tests: 10
  * description: "Test description"
  * lines:
- *   - type: integer
- *     min: 1
- *     max: 100
- *     name: N
- *   - type: array
- *     size: N
- *     element:
- *       type: integer
- *       min: -100
+ *   - - type: integer
+ *       min: 1
  *       max: 100
+ *       name: N
+ *   - - type: array
+ *       size: N
+ *       element:
+ *         type: integer
+ *         min: -100
+ *         max: 100
  */
 
 #include <iostream>
@@ -121,34 +121,37 @@ int main(int argc, char *argv[])
   }
 
   // Load the configuration file
-  const YAML::Node config_node = YAML::LoadFile(config);
+  const std::vector<YAML::Node> config_nodes = YAML::LoadAllFromFile(config);
 
-  std::string filename_template = config_node["filename"].as<std::string>();
-  int from = config_node["from"].as<int>();
-  int to = config_node["to"].as<int>();
-  const auto &lines = config_node["lines"];
-
-  std::cout << "Generating " << (to - from + 1) << " tests." << std::endl;
-
-  for (int i = from; i <= to; ++i)
+  for (const auto &config_node : config_nodes)
   {
-    std::string filename = filename_template;
-    std::string test_number = std::to_string(i);
-    filename.replace(filename.find("%"), 1, test_number);
-    std::ofstream file(filename);
+    std::string filename_template = config_node["filename"].as<std::string>();
+    int from = config_node["from"].as<int>();
+    int to = config_node["to"].as<int>();
+    const auto &lines = config_node["lines"];
 
-    std::cerr << "Generating test " << filename << std::endl;
+    std::cout << "Generating " << (to - from + 1) << " tests." << std::endl;
 
-    if (!file)
+    for (int i = from; i <= to; ++i)
     {
-      std::cerr << "Error: could not open file " << filename << std::endl;
-      return 1;
+      std::string filename = filename_template;
+      std::string test_number = std::to_string(i);
+      filename.replace(filename.find("%"), 1, test_number);
+      std::ofstream file(filename);
+
+      std::cerr << "Generating test " << filename << std::endl;
+
+      if (!file)
+      {
+        std::cerr << "Error: could not open file " << filename << std::endl;
+        return 1;
+      }
+
+      file << generate_test(lines);
+
+      file.close();
+      std::cout << "Test " << filename << " generated." << std::endl;
     }
-
-    file << generate_test(lines);
-
-    file.close();
-    std::cout << "Test " << filename << " generated." << std::endl;
   }
 
   return 0;
