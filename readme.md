@@ -171,8 +171,58 @@ lines:
         max: 100
 ```
 
+Yet another sample, with multiple document definition:
+
+```yaml
+---
+# simple tests
+filename: "input%.txt"
+from: 1
+to: 3
+description: "Test description"
+lines:
+  - - type: integer
+      min: 1
+      max: 100
+    - type: integer
+      min: 1
+      max: 100
+---
+# medium tests
+filename: "input%.txt"
+from: 4
+to: 7
+description: "Test description"
+lines:
+  - - type: integer
+      min: 100
+      max: 1000
+    - type: integer
+      min: 100
+      max: 1000
+---
+# complex tests
+filename: "input%.txt"
+from: 8
+to: 10
+description: "Test description"
+lines:
+  - - type: integer
+      min: 1000
+      max: 10000
+    - type: integer
+      min: 1000
+      max: 10000
+```
+
+This sample will generate:
+
+- 3 files with 2 integers in the line, values between 1 and 100
+- 4 files with 2 integers in the line, values between 100 and 1000
+- 3 files with 2 integers in the line, values between 1000 and 10000
+
 ## Plans for the future
 
 - [X] define more than one element in the line
-- [ ] define more than one test definition in the file
+- [X] define more than one test definition in the file
 - [ ] define lines generator
