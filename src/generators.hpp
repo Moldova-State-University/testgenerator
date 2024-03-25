@@ -4,19 +4,22 @@
 #include <string>
 #include <vector>
 
-const std::string numbers = "0123456789";
-const std::string lowercase = "abcdefghijklmnopqrstuvwxyz";
-const std::string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const std::string characters = numbers + lowercase + uppercase;
+using integer = size_t;
+using string = std::string;
+
+const string numbers = "0123456789";
+const string lowercase = "abcdefghijklmnopqrstuvwxyz";
+const string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const string characters = numbers + lowercase + uppercase;
 
 /**
  * @brief Generate a random integer between min and max (inclusive)
  *
  * @param min
  * @param max
- * @return int
+ * @return integer
  */
-int generate_integer(int min, int max);
+integer generate_integer(integer min, integer max);
 
 /**
  * @brief Generate a random float number between min and max (inclusive) with a given precision
@@ -35,9 +38,9 @@ double generate_float(double min, double max, int precision = 2);
  * @param min_length
  * @param max_length
  * @param characters
- * @return std::string
+ * @return string
  */
-std::string generate_string(int min_length, int max_length, std::string chars = characters);
+string generate_string(int min_length, int max_length, string chars = characters);
 
 /**
  * @brief Generate a random integer vector of size between min and max (inclusive)
@@ -45,9 +48,9 @@ std::string generate_string(int min_length, int max_length, std::string chars = 
  * @param size
  * @param min
  * @param max
- * @return std::vector<int>
+ * @return std::vector<integer>
  */
-std::vector<int> generate_integer_vector(int size, int min, int max);
+std::vector<integer> generate_integer_vector(integer size, integer min, integer max);
 
 /**
  * @brief Generate a random float number vector of size between min and max (inclusive) 
@@ -59,7 +62,7 @@ std::vector<int> generate_integer_vector(int size, int min, int max);
  * @param precision
  * @return std::vector<double>
  */
-std::vector<double> generate_float_vector(int size, double min, double max, int precision = 2);
+std::vector<double> generate_float_vector(integer size, double min, double max, int precision = 2);
 
 /**
  * @brief Generate a random string vector of size between min and max (inclusive) of 
@@ -71,6 +74,6 @@ std::vector<double> generate_float_vector(int size, double min, double max, int 
  * @param characters
  * @return std::vector<std::string>
  */
-std::vector<std::string> generate_string_vector(int size, int min_length, int max_length, std::string chars = characters);
+std::vector<string> generate_string_vector(integer size, int min_length, int max_length, string chars = characters);
 
 #endif // GENERATORS_HPP
