@@ -17,10 +17,10 @@ std::map<std::string, node_to_type> convertor = {
 
 int get_parametrized_value(const std::string &value)
 {
-  int size = 0;
+  integer size = 0;
   if (value.find_first_not_of("-0123456789") == std::string::npos)
   {
-    size = std::stoi(value);
+    size = std::stoull(value);
   }
   else
   {
@@ -39,9 +39,9 @@ int get_parametrized_value(const std::string &value)
 
 std::string node_to_integer(const YAML::Node &node)
 {
-  int min = get_parametrized_value(node["min"].as<std::string>());
-  int max = get_parametrized_value(node["max"].as<std::string>());
-  int number = generate_integer(min, max);
+  integer min = get_parametrized_value(node["min"].as<std::string>());
+  integer max = get_parametrized_value(node["max"].as<std::string>());
+  integer number = generate_integer(min, max);
 
   // if node has name field, store this value in the variables map
   if (node["name"])
@@ -75,14 +75,14 @@ std::string node_to_vector(const YAML::Node &node)
 {
   std::string result{""};
 
-  int size = get_parametrized_value(node["size"].as<std::string>());
+  integer size = get_parametrized_value(node["size"].as<std::string>());
 
   const auto &element = node["element"];
 
   auto element_type = element["type"].as<std::string>();
   if (convertor.at(element_type))
   {
-    for (int i = 0; i < size; i++)
+    for (integer i = 0; i < size; i++)
     {
       result += convertor.at(element_type)(element) + " ";
     }

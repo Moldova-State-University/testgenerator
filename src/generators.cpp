@@ -5,9 +5,9 @@
 
 std::mt19937 rng(std::random_device{}());
 
-int generate_integer(int min, int max)
+integer generate_integer(integer min, integer max)
 {
-  return std::uniform_int_distribution<int>(min, max)(rng);
+  return std::uniform_int_distribution<integer>(min, max)(rng);
 }
 
 double generate_float(double min, double max, int precision)
@@ -29,20 +29,20 @@ std::string generate_string(int min_length, int max_length, std::string chars)
   return result;
 }
 
-std::vector<int> generate_integer_vector(int size, int min, int max)
+std::vector<integer> generate_integer_vector(integer size, integer min, integer max)
 {
-  std::vector<int> result;
-  for (int i = 0; i < size; i++)
+  std::vector<integer> result;
+  for (integer i = 0; i < size; i++)
   {
     result.push_back(generate_integer(min, max));
   }
   return result;
 }
 
-std::vector<double> generate_float_vector(int size, double min, double max, int precision)
+std::vector<double> generate_float_vector(integer size, double min, double max, int precision)
 {
   std::vector<double> result;
-  for (int i = 0; i < size; i++)
+  for (integer i = 0; i < size; i++)
   {
     result.push_back(generate_float(min, max, precision));
   }
@@ -50,10 +50,10 @@ std::vector<double> generate_float_vector(int size, double min, double max, int 
 }
 
 
-std::vector<std::string> generate_string_vector(int size, int min_length, int max_length, std::string chars)
+std::vector<std::string> generate_string_vector(integer size, int min_length, int max_length, std::string chars)
 {
   std::vector<std::string> result;
-  for (int i = 0; i < size; i++)
+  for (integer i = 0; i < size; i++)
   {
     result.push_back(generate_string(min_length, max_length, chars));
   }
