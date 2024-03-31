@@ -104,7 +104,7 @@ If digits is not defined, the number of digits is not limited (number is not tru
 type: string
 min_length: 1
 max_length: 10
-symbols: "abc"
+characters: "abc"
 ```
 
 ### Array of integers definition
@@ -139,7 +139,7 @@ element:
   type: string
   min_length: 1
   max_length: 10
-  symbols: "abc"
+  characters: "abc"
 ```
 
 ## Example
