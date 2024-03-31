@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-using integer = size_t;
+using integer = long long;
 using string = std::string;
 
 const string numbers = "0123456789";
