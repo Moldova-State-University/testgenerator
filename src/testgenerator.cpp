@@ -3,29 +3,11 @@
  * @author Mihail Croitor (mcroitor@gmail.com)
  * @brief This is a simple test data generator that reads a configuration file and
  * generates random test data
- * @version 0.1
- * @date 2024-02-20
+ * @version 0.1.2
+ * @date 2024-04-09
  *
  * @copyright Copyright (c) 2024
  *
- */
-
-/*
- * The configuration file is a YAML file with the following structure:
- * filename: "test%.txt"
- * nr_tests: 10
- * description: "Test description"
- * lines:
- *   - - type: integer
- *       min: 1
- *       max: 100
- *       name: N
- *   - - type: array
- *       size: N
- *       element:
- *         type: integer
- *         min: -100
- *         max: 100
  */
 
 #include <iostream>
@@ -40,6 +22,33 @@
 
 extern std::map<std::string, node_to_type> convertor;
 
+const std::string YAML_SAMPLE = 
+    "---\n"
+    "# example of test specification\n"
+    "filename: \"input%.txt\"\n"
+    "from: 1\n"
+    "to: 10\n"
+    "description: \"Test description\"\n"
+    "lines:\n"
+    "  - - type: integer\n"
+    "      min: 1\n"
+    "      max: 100\n"
+    "      name: M\n"
+    "    - type: integer\n"
+    "      min: 1\n"
+    "      max: 100\n"
+    "      name: N\n"
+    "  - - type: string\n"
+    "      min_length: 1\n"
+    "      max_length: M\n"
+    "      symbols: \"abc\"\n"
+    "  - - type: array\n"
+    "      size: N\n"
+    "      element:\n"
+    "        type: integer\n"
+    "        min: -100\n"
+    "        max: 100\n";
+
 /**
  * @brief Generate a test based on the given structure
  *
@@ -51,21 +60,28 @@ std::string generate_test(const YAML::Node &lines)
   std::string result;
   for (const auto &line : lines)
   {
-    for (const auto &node : line)
+    auto it = line.begin();
+    while(it != line.end())
     {
+      const auto &node = *it;
       auto type = node["type"].as<std::string>();
 
       if (convertor.find(type) != convertor.end())
       {
-        result += convertor.at(type)(node) + " ";
+        result += convertor.at(type)(node);
       }
       else if (type == "array")
       {
-        result += node_to_vector(node) + " ";
+        result += node_to_vector(node);
       }
       else
       {
         std::cerr << "Unknown type: " << type << std::endl;
+      }
+      ++it;
+      if(it != line.end())
+      {
+        result += " ";
       }
     }
     result += "\n";
@@ -86,15 +102,7 @@ void sample_test_description_generator()
     return;
   }
 
-  YAML::Node config;
-
-  config["filename"] = "input%.txt";
-  config["from"] = 1;
-  config["to"] = 10;
-  config["description"] = "Sample test description";
-  config["lines"].push_back(YAML::Load("- type: integer\n  min: 1\n  max: 100\n  name: N"));
-  config["lines"].push_back(YAML::Load("- type: float\n  min: 0\n  max: 1"));
-  config["lines"].push_back(YAML::Load("- type: array\n  size: N\n  element:\n    type: integer\n    min: -100\n    max: 100"));
+  YAML::Node config = YAML::Load(YAML_SAMPLE);
 
   file << config;
   file.close();
