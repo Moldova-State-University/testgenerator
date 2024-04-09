@@ -1,10 +1,10 @@
-# example of test specification
-filename: "input%.txt"
+filename: input%.txt
 from: 1
 to: 10
-description: "Test description"
+description: Test description
 lines:
-  - - type: integer
+  -
+    - type: integer
       min: 1
       max: 100
       name: M
@@ -12,10 +12,13 @@ lines:
       min: 1
       max: 100
       name: N
-  - - type: integer
-      min: 1
-      max: M  
-  - - type: array
+  -
+    - type: string
+      min_length: 1
+      max_length: M
+      symbols: abc
+  -
+    - type: array
       size: N
       element:
         type: integer
