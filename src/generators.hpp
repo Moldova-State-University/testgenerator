@@ -32,7 +32,7 @@ integer generate_integer(integer min, integer max);
 double generate_float(double min, double max, int precision = 2);
 
 /**
- * @brief Generate a random string of length between min_length and max_length (inclusive) 
+ * @brief Generate a random string of length between min_length and max_length (inclusive)
  * using the given characters
  *
  * @param min_length
@@ -53,7 +53,7 @@ string generate_string(int min_length, int max_length, string chars = characters
 std::vector<integer> generate_integer_vector(integer size, integer min, integer max);
 
 /**
- * @brief Generate a random float number vector of size between min and max (inclusive) 
+ * @brief Generate a random float number vector of size between min and max (inclusive)
  * with a given precision
  *
  * @param size
@@ -65,7 +65,7 @@ std::vector<integer> generate_integer_vector(integer size, integer min, integer 
 std::vector<double> generate_float_vector(integer size, double min, double max, int precision = 2);
 
 /**
- * @brief Generate a random string vector of size between min and max (inclusive) of 
+ * @brief Generate a random string vector of size between min and max (inclusive) of
  * length between min_length and max_length (inclusive) using the given characters
  *
  * @param size

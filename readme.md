@@ -42,6 +42,7 @@ Test description file is a YAML file that contains the following fields:
 - `to`: end number of tests to generate
 - `description`: description of the test (?) - not used
 - `lines`: lines of the test
+- `block`: block of lines
 
 Example:
 
@@ -50,16 +51,31 @@ filename: "input%.txt"
 from: 1
 to: 10
 description: "Test description"
-lines:
-  - # line definition
-  - # line definition
-  - # line definition
-  # other lines
+blocks: # blocks of lines
+  - nr_of_lines: 1 # number of lines in the block
+    line: # line definition
+      - type: integer
+        min: 1
+        max: 100
+        name: N
+      - type: integer
+        min: 1
+        max: 100
+        name: M
+  - nr_of_lines: N # number of lines in the block
+    line: # line definition
+      - type: array
+        size: M
+        element:
+          type: integer
+          min: -100
+          max: 100
+# other blocks
 ```
 
 ### Structure of the test
 
-Structure of the test defines format of each line. Line can contain one or more elements.
+Structure of the test defines blocks of lines. Block of lines contain number of lines with the same structure and line definition. Line can contain one or more elements. 
 
 Each element can be of the following types:
 
@@ -142,7 +158,9 @@ element:
   characters: "abc"
 ```
 
-## Example
+## Examples
+
+### Simple example
 
 This example defines 10 tests. Test contains 2 lines. First line contains one integer `N` value in the range from 1 to 100. Second line contains `N` integer values in the range from -100 to 100.
 
@@ -151,25 +169,29 @@ filename: "input%.txt"
 from: 1
 to: 10
 description: "Test description"
-lines:
-  - - type: integer
-      min: 1
-      max: 100
-      name: M
-    - type: integer
-      min: 1
-      max: 100
-      name: N
-  - - type: integer
-      min: 1
-      max: M
-  - - type: array
-      size: N
-      element:
-        type: integer
-        min: -100
+blocks:
+  - nr_of_lines: 1
+    line:
+      - type: integer
+        min: 1
         max: 100
+        name: N
+      - type: integer
+        min: 1
+        max: 100
+        name: M
+  - nr_of_lines: N
+    line:
+      - type: array
+        size: M
+        element:
+          type: string
+          min_length: 10
+          max_length: 10
+          characters: "abc"
 ```
+
+### Multiple document definition example
 
 Yet another sample, with multiple document definition:
 
@@ -180,39 +202,45 @@ filename: "input%.txt"
 from: 1
 to: 3
 description: "Test description"
-lines:
-  - - type: integer
-      min: 1
-      max: 100
-    - type: integer
-      min: 1
-      max: 100
+blocks:
+  - nr_of_lines: 1
+    line:
+      - type: integer
+        min: 1
+        max: 100
+      - type: integer
+        min: 1
+        max: 100
 ---
 # medium tests
 filename: "input%.txt"
 from: 4
 to: 7
 description: "Test description"
-lines:
-  - - type: integer
-      min: 100
-      max: 1000
-    - type: integer
-      min: 100
-      max: 1000
+blocks:
+  - nr_of_lines: 1
+    line:
+      - type: integer
+        min: 100
+        max: 1000
+      - type: integer
+        min: 100
+        max: 1000
 ---
 # complex tests
 filename: "input%.txt"
 from: 8
 to: 10
 description: "Test description"
-lines:
-  - - type: integer
-      min: 1000
-      max: 10000
-    - type: integer
-      min: 1000
-      max: 10000
+blocks:
+  - nr_of_lines: 1
+    line:
+      - type: integer
+        min: 1000
+        max: 10000
+      - type: integer
+        min: 1000
+        max: 10000
 ```
 
 This sample will generate:
@@ -220,6 +248,35 @@ This sample will generate:
 - 3 files with 2 integers in the line, values between 1 and 100
 - 4 files with 2 integers in the line, values between 100 and 1000
 - 3 files with 2 integers in the line, values between 1000 and 10000
+
+### Block of lines example
+
+This example defines 10 tests. Each test contains `N` number of lines in the first line and `M` number of elements in the line. The next `N` lines contain `M` integer values in the range from -100 to 100.
+
+```yaml
+filename: "input%.txt"
+from: 1
+to: 10
+description: "Test description"
+blocks:
+lines:
+  - nr_of_lines: 1
+    line:
+      - type: integer
+        min: 1
+        max: 100
+        name: N
+      - type: integer
+        min: 1
+        max: 100
+        name: M
+  - nr_of_lines: N
+    line:
+      type: string
+      min_length: 1
+      max_length: M
+
+```
 
 ## Plans for the future
 
