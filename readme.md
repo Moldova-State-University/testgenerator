@@ -41,7 +41,6 @@ Test description file is a YAML file that contains the following fields:
 - `from`: start number of tests to generate
 - `to`: end number of tests to generate
 - `description`: description of the test (?) - not used
-- `lines`: lines of the test
 - `block`: block of lines
 
 Example:
