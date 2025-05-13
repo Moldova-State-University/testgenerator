@@ -18,7 +18,7 @@ Download the source code and build the application using the following commands:
 mkdir build
 cd build
 cmake ../src
-make
+cmake --build .
 ```
 
 ## Usage
