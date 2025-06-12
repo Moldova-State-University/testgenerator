@@ -1,6 +1,8 @@
 #include "generators.hpp"
 #include "formatparser.hpp"
 #include <iostream>
+#include <algorithm>
+#include <numeric>
 
 // used for storing variable names and their values
 std::map<std::string, int> variables;
@@ -83,6 +85,45 @@ std::string node_to_string(const YAML::Node& node)
     return string;
 }
 
+void sort(
+    std::vector<std::string>& elements,
+    const std::string& type,
+    const std::string& order) {
+    if (order == "unordered")
+    {
+        return;
+    }
+    if (type == "integer") {
+        if(order == "asc") {
+            std::sort(elements.begin(), elements.end(), [](const std::string& a, const std::string& b) {
+                return std::stoi(a) < std::stoi(b);
+            });
+        } else if (order == "desc") {
+            std::sort(elements.begin(), elements.end(), [](const std::string& a, const std::string& b) {
+                return std::stoi(a) > std::stoi(b);
+            });
+        }
+        return;
+    }
+    if (type == "float") {
+        if(order == "asc") {
+            std::sort(elements.begin(), elements.end(), [](const std::string& a, const std::string& b) {
+                return std::stod(a) < std::stod(b);
+            });
+        } else if (order == "desc") {
+            std::sort(elements.begin(), elements.end(), [](const std::string& a, const std::string& b) {
+                return std::stod(a) > std::stod(b);
+            });
+        }
+        return;
+    }
+    if(order == "asc") {
+        std::sort(elements.begin(), elements.end());
+    } else if (order == "desc") {
+        std::sort(elements.rbegin(), elements.rend());
+    }
+}
+
 std::string node_to_vector(const YAML::Node& node)
 {
     std::string result{ "" };
@@ -92,12 +133,30 @@ std::string node_to_vector(const YAML::Node& node)
     const auto& element = node["element"];
 
     auto element_type = element["type"].as<std::string>();
+    // check if element has order field
+    std::string order = "unordered";
+    if (node["order"])
+    {
+        order = node["order"].as<std::string>();
+    }
     if (convertor.at(element_type))
     {
-        for (integer i = 0; i < size; i++)
+        // generate vector of elements
+        std::vector<std::string> elements;
+        for (int i = 0; i < size; ++i)
         {
-            result += convertor.at(element_type)(element) + " ";
+            elements.push_back(convertor.at(element_type)(element));
         }
+        sort(elements, element_type, order);
+
+        // join elements with space
+        result = std::accumulate(
+            elements.begin(),
+            elements.end(),
+            std::string{},
+            [](const std::string& a, const std::string& b) {
+                return a.empty() ? b : a + " " + b;
+            });
     }
     else
     {

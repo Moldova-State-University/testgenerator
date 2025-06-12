@@ -92,7 +92,7 @@ For each float you can define a range of values and maximal number of digits in 
 
 For each string, you can define minimal and maximal length and allowed symbols.
 
-For each array, you can define a number of elements and a range of values for each element. Number of elements can be a constant or a reference to the previous lines.
+For each array, you can define a number of elements and a range of values for each element. Number of elements can be a constant or a reference to the previous lines. Array can be generated ordered or unordered.
 
 ### Integer value definition
 
@@ -128,6 +128,7 @@ characters: "abc"
 ```yaml
 type: array
 size: 5
+order: asc # optional, can be 'asc', 'desc', or 'unordered'. default is 'unordered'.
 element:
   type: integer
   min: 1
@@ -282,4 +283,4 @@ lines:
 
 - [X] define more than one element in the line
 - [X] define more than one test definition in the file
-- [ ] define lines generator
+- [X] define lines generator
