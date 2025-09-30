@@ -10,9 +10,10 @@ pipeline {
         stage('Build') { 
             steps {
                 sh 'mkdir build'
-                sh 'cd build'
-                sh 'cmake ../src'
-                sh 'cmake --build .'
+                dir('build') {
+                    sh 'cmake ../src'
+                    sh 'cmake --build .'
+                }
             }
         }
     }
