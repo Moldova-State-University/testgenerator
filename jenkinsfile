@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    stages {
+        stage('Prepare') { 
+            steps {
+                sh 'echo prepare'
+                sh 'rm -rf build'
+            }
+        }
+        stage('Build') { 
+            steps {
+                sh 'mkdir build'
+                dir('build') {
+                    sh 'cmake ../src'
+                    sh 'cmake --build .'
+                }
+            }
+        }
+    }
+}
