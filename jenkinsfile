@@ -1,5 +1,17 @@
 pipeline {
     agent any
+    parameters {
+        choice(
+            name: 'ENVIRONMENT', 
+            choices: ['dev', 'staging', 'prod'], 
+            description: 'Target environment for deployment'
+        )
+        string(
+            name: 'BRANCH', 
+            defaultValue: 'main', 
+            description: 'Branch for work'
+        )
+    }
     stages {
         stage('Prepare') { 
             steps {
@@ -9,6 +21,7 @@ pipeline {
         }
         stage('Build') { 
             steps {
+                sh "git checkout ${params.BRANCH}"
                 sh 'mkdir build'
                 dir('build') {
                     sh 'cmake ../src'

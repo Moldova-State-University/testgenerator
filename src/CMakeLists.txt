@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.25)
 
 # project name: testgenerator
 # project type: C++ executable
@@ -17,4 +17,5 @@ find_package(yaml-cpp REQUIRED)
 # add the executable
 add_executable(testgenerator ${SOURCES})
 target_link_libraries(testgenerator yaml-cpp)
+
 target_link_libraries(testgenerator -static)
